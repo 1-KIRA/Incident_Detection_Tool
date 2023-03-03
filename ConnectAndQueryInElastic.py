@@ -40,3 +40,14 @@ extracted_documents = extractor.extract_fields()
 # Print the extracted documents
 for doc in extracted_documents:
     print(doc)
+
+
+
+class ElasticsearchQuery:
+    def __init__(self, host, port):
+        self.es = Elasticsearch([{'host': host, 'port': port}])
+    
+    def search(self, index, query):
+        res = self.es.search(index=index, body=query)
+        hits = res['hits']['hits']
+        return [hit['_source'] for hit in hits]

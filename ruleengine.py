@@ -1,6 +1,9 @@
+from elasticsearch_query import ElasticsearchQuery
 import yaml
-class RuleEngine:
-    def __init__(self, rules_file):
+
+class RuleEngine(ElasticsearchQuery):
+    def __init__(self, host, port, rules_file):
+        super().__init__(host, port)
         with open(rules_file, 'r') as file:
             self.rules = yaml.load(file, Loader=yaml.FullLoader)
 
