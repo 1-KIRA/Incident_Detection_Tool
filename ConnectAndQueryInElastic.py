@@ -1,11 +1,14 @@
 from elasticsearch import Elasticsearch
 
+'''The ElasticsearchIndexExtractor class is created to extract specific fields 
+from documents in an Elasticsearch index using a specified query'''
 class ElasticsearchIndexExtractor:
     def __init__(self, index, fields):
         self.index = index
         self.fields = fields
         self.es = Elasticsearch(['http://3.229.13.155:9200'])
     
+    #extract_fields  executes the query and returns a list of documents containing only the specified fields.
     def extract_fields(self):
         # Define the search query
         query = {
@@ -42,7 +45,9 @@ for doc in extracted_documents:
     print(doc)
 
 
+'''The ElasticsearchQuery class is created to execute arbitrary Elasticsearch queries on a specified index
 
+'''
 class ElasticsearchQuery:
     def __init__(self, host, port):
         self.es = Elasticsearch([{'host': host, 'port': port}])
