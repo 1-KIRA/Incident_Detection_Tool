@@ -1,0 +1,17 @@
+- name: ssh_bruteforce
+  conditions:
+    - when:
+        field: action
+        value: Password failed
+        time_field: "timestamp"
+      times:
+        count: 5
+      within: 60
+    - when:
+        field: IPV4
+        value: 192.168.13.12
+      times:
+        count: 5
+      within: 60
+  actions:
+    - log: "Possible SSH brute-force attack detected"

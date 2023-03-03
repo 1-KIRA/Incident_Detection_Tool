@@ -1,30 +1,33 @@
-from elasticsearch_query import ElasticsearchQuery
+import logging
+from datetime import datetime, timedelta
 import yaml
 
-class RuleEngine(ElasticsearchQuery):
-    def __init__(self, host, port, rules_file):
-        super().__init__(host, port)
-        with open(rules_file, 'r') as file:
-            self.rules = yaml.load(file, Loader=yaml.FullLoader)
+class RuleEngine:
+    def __init__(self, rules_file):
+        # Set up logger
+        logging.basicConfig(filename='ruleengine.log', level=logging.DEBUG)
 
-    def apply_rules(self, log_data):
+        # Load rules from YAML file
+        with open(rules_file, 'r') as stream:
+            try:
+                self.rules = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                logging.error(f"Error loading rules from {rules_file}: {exc}")
+
+    def match(self, log):
         for rule in self.rules:
-            if self._evaluate_conditions(rule['conditions'], log_data):
-                for action in rule['actions']:
-                    self._execute_action(action, log_data)
+            matched = True
+            for condition in rule["conditions"]:
+                field = condition["when"]["field"]
+                value = condition["when"]["value"]
+                within = timedelta(seconds=condition["within"])
 
-    def _evaluate_conditions(self, conditions, log_data):
-        for condition in conditions:
-            field = condition['when']['field']
-            value = condition['when']['value']
-            if field in log_data and log_data[field] == value:
-                return True
-        return False
+                # Filter logs that match the condition
+                logs = [l for l in log if (field) == value]
 
-    def _execute_action(self, action, log_data):
-        if action['action'] == 'log':
-            print(action['message'] % log_data)
-        elif action['action'] == 'set':
-            log_data[action['field']] = action['value']
-        else:
-            raise Exception(f"Unknown action {action['action']}")
+            if matched:
+                actions = rule["actions"]
+                # Log the matched rule
+                logging.info(f"Matched rule: {rule}")
+                return actions
+        return []

@@ -32,25 +32,13 @@ class ElasticsearchIndexExtractor:
         # Return the list of documents containing only the specified fields
         return documents
 # Define the index name and fields to extract
-index_name = "parsed_auth_log"
-fields = ["Timestamp","hostname","sesssion","action","User","IPV4","tty","Rhost","auth_failure_user","Message","Logged_in_user"]
-
-# Create an instance of the ElasticsearchIndexExtractor class
-extractor = ElasticsearchIndexExtractor(index_name, fields)
-# Call the extract_fields method and store the result in a variable
-extracted_documents = extractor.extract_fields()
-
-# Print the extracted documents
-for doc in extracted_documents:
-    print(doc)
-
 
 '''The ElasticsearchQuery class is created to execute arbitrary Elasticsearch queries on a specified index
 
 '''
 class ElasticsearchQuery:
-    def __init__(self, host, port):
-        self.es = Elasticsearch([{'host': host, 'port': port}])
+    def __init__(self):
+        self.es = Elasticsearch(['http://3.229.13.155:9200'])
     
     def search(self, index, query):
         res = self.es.search(index=index, body=query)
