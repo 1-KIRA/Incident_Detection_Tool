@@ -23,8 +23,9 @@ s = Search(using=es, index='test').query(query)
 for hit in s.scan():
     # Extract relevant fields (e.g., IP address, timestamp)
     ip_address = hit.IPV4
-    timestamp = datetime.datetime.strptime(hit['@timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ')
-    
+    timestamp = datetime.datetime.strptime(hit['Timestamp'], '%b %d %H:%M:%S')
+    hostname=hit.hostname
+    user=hit.User
     # Check if failed login attempt matches the rule
     if ip_address:
         # Update data structure with new failed login attempt
@@ -33,7 +34,7 @@ for hit in s.scan():
         if ip_attempts[ip_address] >= rule['conditions'][0]['count']:
             if ip_address in ip_last_attempt_time and \
                (timestamp - ip_last_attempt_time[ip_address]).seconds <= rule['conditions'][0]['timeframe']:
-                print(f"Incident detected: {ip_address} made {ip_attempts[ip_address]} failed login attempts within {rule['conditions'][0]['timeframe']} seconds.")
+                print(f"Incident detected: {ip_address} made {ip_attempts[ip_address]} failed login attempts within {rule['conditions'][0]['timeframe']} seconds in {hostname} for user {user}.")
                 # Clear the number of attempts for this IP
                 ip_attempts[ip_address] = 0
             else:
