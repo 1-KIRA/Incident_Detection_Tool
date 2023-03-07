@@ -1,0 +1,6 @@
+source: system_log
+event_type: login_failure
+conditions:
+  - count: 1
+    timeframe: 300
+    by: ip_address

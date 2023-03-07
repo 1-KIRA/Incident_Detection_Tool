@@ -44,3 +44,4 @@ class ElasticsearchQuery:
         res = self.es.search(index=index, body=query)
         hits = res['hits']['hits']
         return [hit['_source'] for hit in hits]
+    
