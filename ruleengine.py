@@ -1,6 +1,7 @@
 import yaml
 from collections import defaultdict
 import datetime
+from ConnectAndQueryInElastic import ElasticsearchQuery
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search, Q
 
@@ -13,10 +14,10 @@ ip_attempts = defaultdict(int)
 ip_last_attempt_time = {}
 
 # Connect to Elasticsearch
-es = Elasticsearch(['http://3.229.13.155:9200'])
+es = ElasticsearchQuery()
 
 # Define Elasticsearch query to retrieve log entries
-query = Q('match', action='Failed password for') & Q('exists', field='IPV4')
+query = Q('match', action='Failed password') & Q('exists', field='IPV4')
 s = Search(using=es, index='test').query(query)
 
 # Process log entries

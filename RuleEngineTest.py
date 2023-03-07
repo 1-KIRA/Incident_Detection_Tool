@@ -1,51 +1,49 @@
 import yaml
-import re
-from ConnectAndQueryInElastic import ElasticsearchQuery
-es_query = ElasticsearchQuery()
+from collections import defaultdict
+import datetime
+from elasticsearch import Elasticsearch
+from elasticsearch_dsl import Search, Q
+
 
 class RuleEngine:
-    def __init__(self, yaml_file):
-        with open(yaml_file) as f:
-            self.rules = yaml.load(f, Loader=yaml.FullLoader)['rules']
+    def __init__(self, rules_file_path, elasticsearch_hosts):
+        # Load YAML rule from file
+        with open(rules_file_path, 'r') as f:
+            self.rule = yaml.safe_load(f)
+        
+        # Initialize data structure to store failed login attempts
+        self.ip_attempts = defaultdict(int)
+        self.ip_last_attempt_time = {}
+        
+        # Connect to Elasticsearch
+        self.es = Elasticsearch(elasticsearch_hosts)
+        
+    def process_logs(self, index_name):
+        # Define Elasticsearch query to retrieve log entries
+        query = Q('match', action='Failed password for') & Q('exists', field='IPV4')
+        s = Search(using=self.es, index=index_name).query(query)
 
+        # Process log entries
+        for hit in s.scan():
+            # Extract relevant fields (e.g., IP address, timestamp)
+            ip_address = hit.IPV4
+            timestamp = datetime.datetime.strptime(hit['Timestamp'], '%b %d %H:%M:%S')
+            hostname=hit.hostname
+            user=hit.User
+            # Check if failed login attempt matches the rule
+            if ip_address:
+                # Update data structure with new failed login attempt
+                self.ip_attempts[ip_address] += 1
+                # Check if the IP address has reached the threshold in the specified timeframe
+                if self.ip_attempts[ip_address] >= self.rule['conditions'][0]['count']:
+                    if ip_address in self.ip_last_attempt_time and \
+                       (timestamp - self.ip_last_attempt_time[ip_address]).seconds <= self.rule['conditions'][0]['timeframe']:
+                        print(f"Incident detected: {ip_address} made {self.ip_attempts[ip_address]} failed login attempts within {self.rule['conditions'][0]['timeframe']} seconds in {hostname} for user {user}.")
+                        # Clear the number of attempts for this IP
+                        self.ip_attempts[ip_address] = 0
+                    else:
+                        # Update last attempted time for the IP
+                        self.ip_last_attempt_time[ip_address] = timestamp
+                        self.ip_attempts[ip_address] = 1
 
-    def check_rule(self, log, rule):
-        for condition in rule['conditions']:
-            if condition['when']['field'] in log and condition['when']['contains'] in log[condition['when']['field']]:
-                return True
-        return False
-
-
-    def process_rule(rule, log):
-        ip_pattern = re.compile(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}")
-        username_pattern = re.compile(r"user (\S+)")
-        hostname_pattern = re.compile(r"from (\S+)")
-        timestamp_pattern = re.compile(r"(\w{3} \d{1,2} \d{2}:\d{2}:\d{2})")
-
-        ip_match = ip_pattern.search(log['Message'])
-        username_match = username_pattern.search(log['Message'])
-        hostname_match = hostname_pattern.search(log['Message'])
-        timestamp_match = timestamp_pattern.search(log['Timestamp'])
-
-        ip = ip_match.group() if ip_match else ''
-        username = username_match.group(1) if username_match else ''
-        hostname = hostname_match.group(1) if hostname_match else ''
-        timestamp = timestamp_match.group(1) if timestamp_match else ''
-
-        for action in rule['actions']:
-            if 'log' in action:
-                log_message = action['log'].format(IPV4=ip, Timestamp=timestamp, hostname=hostname, user=username)
-                print(log_message)
-            if 'file' in action:
-                with open(action['file'], 'a') as f:
-                    f.write(f'{rule["name"]}: {log}\n')
-
-    def run(self, index, query=None, size=1000):
-        query = query or {'query': {'match_all': {}}}
-        search_result = es_query(index=index, body=query, size=size)
-        for hit in search_result['hits']['hits']:
-            log = hit['_source']
-            for rule in self.rules:
-                if self.check_rule(log, rule):
-                    self.process_rule(log, rule)
 
