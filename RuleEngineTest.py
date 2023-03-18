@@ -61,7 +61,7 @@ class HttpBruteforce:
         self.es = Elasticsearch(elasticsearch_hosts)
 
     def process_logs(self, index_name):
-            
+            sd
         query = Q('exists', field='username_pass')
         s = Search(using=self.es, index=index_name).query(query)
 
