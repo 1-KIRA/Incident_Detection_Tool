@@ -1,20 +1,20 @@
 import yaml
 from collections import defaultdict
 import datetime
-from ConnectAndQueryInElastic import ElasticsearchQuery
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search, Q
 
 # Load YAML rule from file
 with open('rules.yaml', 'r') as f:
     rule = yaml.safe_load(f)
+    print(rule)
 
 # Initialize data structure to store failed login attempts
 ip_attempts = defaultdict(int)
 ip_last_attempt_time = {}
 
 # Connect to Elasticsearch
-es = ElasticsearchQuery()
+es = Elasticsearch(['http://3.229.13.155:9200'])
 
 # Define Elasticsearch query to retrieve log entries
 query = Q('match', action='Failed password') & Q('exists', field='IPV4')

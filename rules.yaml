@@ -1,6 +1,10 @@
-source: system_log
-event_type: login_failure
+source: auth_log
+event_type: ssh_bruteforce
 conditions:
   - count: 3
     timeframe: 300
     by: ip_address
+  
+  - http_count: 100
+    http_timeframe: 10
+    by: http_ip_address
