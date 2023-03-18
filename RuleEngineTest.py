@@ -92,7 +92,7 @@ class HttpBruteforce:
                         self.ip_last_attempt_time[http_ip_address] = timestamp
                         self.ip_attempts[http_ip_address] = 1
                     
-    # Create an instance of RuleEngine
+    # Create an instance of RuleEnginea
 engine = HttpBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
 
 # Call the process_logs method to run the rule engine
