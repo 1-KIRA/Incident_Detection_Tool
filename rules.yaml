@@ -2,7 +2,7 @@ source: auth_log
 event_type: ssh_bruteforce
 conditions:
   - count: 3
-    timeframe: 300
+    timeframe: 10
     by: ip_address
   
   - http_count: 100
