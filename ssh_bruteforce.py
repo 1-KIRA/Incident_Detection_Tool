@@ -38,7 +38,7 @@ class SshBruteforce:
                 if self.ip_attempts[ip_address] >= self.rule['conditions'][0]['count']:
                     if ip_address in self.ip_last_attempt_time and \
                        (timestamp - self.ip_last_attempt_time[ip_address]).seconds <= self.rule['conditions'][0]['timeframe']:
-                        alert=(f"Incident detected: {ip_address} made {self.ip_attempts[ip_address]} failed login attempts within {self.rule['conditions'][0]['timeframe']} seconds in {hostname} for user {user}.")
+                        alert=(f"Incident detected: {ip_address} made {self.ip_attempts[ip_address]} failed login attempts within {self.rule['conditions'][0]['timeframe']} seconds in {hostname} for user {user}")
                         # Clear the number of attempts for this IP
                         self.ip_attempts[ip_address] = 0
                         sender = GmailSender('env.txt')

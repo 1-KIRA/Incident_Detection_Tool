@@ -39,7 +39,7 @@ class HttpBruteforce:
                 if self.ip_attempts[http_ip_address] >= self.rule['conditions'][1]['http_count']:
                     if http_ip_address in self.ip_last_attempt_time and \
                     (timestamp - self.ip_last_attempt_time[http_ip_address]).seconds <= self.rule['conditions'][1]['http_timeframe']:
-                        alert=(f"Incident detected: {http_ip_address} made {self.ip_attempts[http_ip_address]} failed login attempts within {self.rule['conditions'][1]['http_timeframe']} seconds in {http_url}.")
+                        alert=(f"Incident detected: {http_ip_address} made {self.ip_attempts[http_ip_address]} failed login attempts within {self.rule['conditions'][1]['http_timeframe']} seconds in {http_url}")
                         # Clear the number of attempts for this IP
                         self.ip_attempts[http_ip_address] = 0
                         sender = GmailSender('env.txt')
