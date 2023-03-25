@@ -54,7 +54,7 @@ class HttpBruteforce:
                         self.ip_attempts[http_ip_address] = 1
                     
     # Create an instance of RuleEnginea
-engine = HttpBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
+# engine = HttpBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
 
-# Call the process_logs method to run the rule engine
-engine.process_logs('access_log')
+# # Call the process_logs method to run the rule engine
+# engine.process_logs('access_log')

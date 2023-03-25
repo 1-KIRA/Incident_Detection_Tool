@@ -46,12 +46,13 @@ class SshBruteforce:
                         send_log_index='incident'
                         detected_incident={'message':alert}
                         self.es.index(index=send_log_index, document=detected_incident)
+                        break
                     else:
                         # Update last attempted time for the IP
                         self.ip_last_attempt_time[ip_address] = timestamp
                         self.ip_attempts[ip_address] = 1
 
-engine = SshBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
+# engine = SshBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
 
-# Call the process_logs method to run the rule engine
-engine.process_logs('test')
+# # Call the process_logs method to run the rule engine
+# engine.process_logs('test')
