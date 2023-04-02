@@ -4,6 +4,7 @@ import datetime
 from elasticsearch import Elasticsearch, exceptions
 from elasticsearch_dsl import Search, Q
 from smtp import GmailSender
+import sys
 
 class SshBruteforce:
     def __init__(self, rules_file_path, elasticsearch_hosts):
@@ -58,7 +59,7 @@ try:
     # Call the process_logs method to run the rule engine
     engine.process_logs('test')
 except exceptions.ConnectionError:
-     print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+     print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
      print('Elascticsearch not connected. Elasticsearch seems down \n')
      print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
      sys.exit()

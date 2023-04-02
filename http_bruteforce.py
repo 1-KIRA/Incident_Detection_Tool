@@ -4,6 +4,8 @@ import datetime
 from elasticsearch import Elasticsearch, exceptions
 from elasticsearch_dsl import Search, Q
 from smtp import GmailSender
+import sys
+
 class HttpBruteforce:
     def __init__(self, rules_file_path, elasticsearch_hosts):
     # Load YAML rule from file
@@ -19,7 +21,7 @@ class HttpBruteforce:
         self.es = Elasticsearch(elasticsearch_hosts)
 
     def process_logs(self, index_name):
-        query = Q('exists', field='username_pass'),
+        query = Q('exists', field='username_pass')
         s = Search(using=self.es, index=index_name).query(query)
 
         # Process log entries
@@ -53,14 +55,15 @@ class HttpBruteforce:
                         # Update last attempted time for the IP
                         self.ip_last_attempt_time[http_ip_address] = timestamp
                         self.ip_attempts[http_ip_address] = 1
-try:                    
-    # Create an instance of RuleEnginea
-    engine = HttpBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
+try:  
+    while True:                  
+        # Create an instance of RuleEnginea
+        engine = HttpBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
 
-    # Call the process_logs method to run the rule engine
-    engine.process_logs('access_log')
+        # Call the process_logs method to run the rule engine
+        engine.process_logs('access_log')
 except exceptions.ConnectionError:
-     print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+     print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
      print('Elascticsearch not connected. Elasticsearch seems down \n')
      print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
      sys.exit()
