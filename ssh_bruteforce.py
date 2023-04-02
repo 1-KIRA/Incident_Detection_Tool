@@ -1,7 +1,7 @@
 import yaml
 from collections import defaultdict
 import datetime
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch, exceptions
 from elasticsearch_dsl import Search, Q
 from smtp import GmailSender
 
@@ -43,15 +43,22 @@ class SshBruteforce:
                         self.ip_attempts[ip_address] = 0
                         sender = GmailSender('env.txt')
                         sender.send_email('Incident Detected', alert)
-                        send_log_index='incident'
-                        detected_incident={'message':alert}
-                        self.es.index(index=send_log_index, document=detected_incident)
+                        now = datetime.datetime.now()
+                        formatted_date = now.strftime("%Y-%m-%d %H:%M:%S")
+                        send_log_index='myindex'
+                        detected_incident={'Timestamp':formatted_date,'IPV4':ip_address,"Hostname":hostname,'Message':alert,'Username':user}
+                        self.es.index(index=send_log_index, body=detected_incident)
                     else:
                         # Update last attempted time for the IP
                         self.ip_last_attempt_time[ip_address] = timestamp
                         self.ip_attempts[ip_address] = 1
+try:
+    engine = SshBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
 
-engine = SshBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
-
-# Call the process_logs method to run the rule engine
-engine.process_logs('test')
+    # Call the process_logs method to run the rule engine
+    engine.process_logs('test')
+except exceptions.ConnectionError:
+     print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+     print('Elascticsearch not connected. Elasticsearch seems down \n')
+     print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+     sys.exit()

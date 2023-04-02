@@ -8,3 +8,6 @@ conditions:
   - http_count: 100
     http_timeframe: 10
     by: http_ip_address
+
+  - contains: Possible SYN flooding
+    contain: Possible SYN flooding on
