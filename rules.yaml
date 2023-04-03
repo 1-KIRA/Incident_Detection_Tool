@@ -1,7 +1,8 @@
-source: auth_log
-event_type: ssh_bruteforce
+source: elasticsearch
+event_type: Log analysis
 conditions:
-  - count: 3
+#rule for SSH Bruteforce
+  - count: 20
     timeframe: 10
     by: ip_address
   
