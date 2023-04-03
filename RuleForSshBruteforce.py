@@ -62,16 +62,17 @@ class SshBruteforce:
             print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
             print('The field you entered doesnot exist. ')
             print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-try:
-    while True:
-        engine = SshBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
+# try:
+#     while True:
+#         engine = SshBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
 
-        # Call the process_logs method to run the rule engine
-        engine.process_auth_logs('test')
-except exceptions.ConnectionError:
-     print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-     print('Elascticsearch not connected. Elasticsearch seems down \n')
-     print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-     sys.exit()
-except KeyboardInterrupt:
-    sys.exit()
+#         # Call the process_logs method to run the rule engine
+#         engine.process_auth_logs('test')
+#         pass
+# except exceptions.ConnectionError:
+#      print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+#      print('Elascticsearch not connected. Elasticsearch seems down \n')
+#      print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+#      sys.exit()
+# except KeyboardInterrupt:
+#     sys.exit()

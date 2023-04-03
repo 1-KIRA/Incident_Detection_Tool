@@ -49,19 +49,19 @@ class DOS:
             print('The field you entered doesnot exist ')
             print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
-try:
-    while True:               
-        # Create an instance of RuleEngine
-        engine = DOS('rules.yaml', ['http://3.229.13.155:9200'])
+# try:
+#     while True:               
+#         # Create an instance of RuleEngine
+#         engine = DOS('rules.yaml', ['http://3.229.13.155:9200'])
 
-        # Call the process_logs method to run the rule engine
-        engine.process_kern_logs('doslog')
+#         # Call the process_logs method to run the rule engine
+#         engine.process_kern_logs('doslog')
 
-except exceptions.ConnectionError:
-     print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-     print('Elascticsearch not connected. Elasticsearch seems down \n')
-     print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-     sys.exit()
+# except exceptions.ConnectionError:
+#      print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+#      print('Elascticsearch not connected. Elasticsearch seems down \n')
+#      print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+#      sys.exit()
      
-except KeyboardInterrupt:
-    sys.exit()
+# except KeyboardInterrupt:
+#     sys.exit()

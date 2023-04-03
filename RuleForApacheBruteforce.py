@@ -71,17 +71,17 @@ class HttpBruteforce:
             print('The field you entered doesnot exist. ')
             print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
 
-try:  
-    while True:                  
-        # Create an instance of RuleEnginea
-        engine = HttpBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
+# try:  
+#     while True:                  
+#         # Create an instance of RuleEnginea
+#         engine = HttpBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
 
-        # Call the process_logs method to run the rule engine
-        engine.process_apache_logs('access_log')
-except exceptions.ConnectionError:
-     print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-     print('Elascticsearch not connected. Elasticsearch seems down. \n')
-     print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-     sys.exit()
-except KeyboardInterrupt:
-      sys.exit()
+#         # Call the process_logs method to run the rule engine
+#         engine.process_apache_logs('access_log')
+# except exceptions.ConnectionError:
+#      print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+#      print('Elascticsearch not connected. Elasticsearch seems down. \n')
+#      print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+#      sys.exit()
+# except KeyboardInterrupt:
+#       sys.exit()
