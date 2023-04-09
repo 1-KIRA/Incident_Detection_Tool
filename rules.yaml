@@ -2,13 +2,13 @@ source: elasticsearch
 event_type: Log analysis
 conditions:
 #rule for SSH Bruteforce
-  - count: 20
+  - count: 500
     timeframe: 10
     by: ip_address
-  
+#rule for Apache login bruteforce  
   - http_count: 100
     http_timeframe: 10
     by: http_ip_address
-
+#rule for Denial-Of-Service
   - contains: Possible SYN flooding
     contain: Possible SYN flooding on
