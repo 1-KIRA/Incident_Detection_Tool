@@ -14,8 +14,6 @@ Logstash: https://www.elastic.co/downloads/logstash
 
 Filebeat: https://www.elastic.co/downloads/beats/filebeat
 
-Winlogbeat: https://www.elastic.co/downloads/beats/winlogbeat
-
 Python3: https://www.python.org/downloads/
 
 Configure ELK stack, filebeat and winlogbeat.
