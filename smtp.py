@@ -28,5 +28,6 @@ class GmailSender:
             server.sendmail(self.smtp_username, self.to_address, msg.as_string())
 
         print('Email sent!')
+        
 # sender = GmailSender('env.txt')
 # sender.send_email('Test email from Python', 'Hello, this is a test email from Python.')
