@@ -1,10 +1,10 @@
 import yaml
 from collections import defaultdict
 import datetime
-from elasticsearch import Elasticsearch, exceptions
+from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search, Q
 from smtp import GmailSender
-import sys
+
 
 class SshBruteforce:
     def __init__(self, rules_file_path, elasticsearch_hosts):
