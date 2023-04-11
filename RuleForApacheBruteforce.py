@@ -49,6 +49,8 @@ class HttpBruteforce:
                             self.ip_attempts[http_ip_address] += 1
                             if self.http_url_attempts[http_url][http_ip_address] >= self.rule['conditions'][1]['http_count']:
                                 alert=(f"ALERT: IP address {http_ip_address} has made {self.rule['conditions'][1]['http_count']} attempts on {http_url} within {self.rule['conditions'][1]['http_timeframe']} seconds!")
+                                
+                                #Sending alert if incident is occurred.
                                 sender = GmailSender('env.txt')
                                 sender.send_email('Incident Detected', alert)
                                 now = datetime.datetime.now()
@@ -56,16 +58,17 @@ class HttpBruteforce:
                                 send_log_index='myindex'
                                 detected_incident={'Timestamp':formatted_date,'IPV4':http_ip_address,'Message':alert,'URL':http_url}
                                 self.es.index(index=send_log_index, document=detected_incident)
-                        
+                        #changing value of ip address attempt to 1 and changing IP alst attemt to previous timestamp.
                         else:
                             self.ip_last_attempt_time[http_ip_address] = Timestamp
                             self.http_url_attempts[http_url][http_ip_address] = 1
+                    #changing value of ip address attempt to 1 and changing IP alst attemt to previous timestamp.
                     else:
                         self.ip_last_attempt_time[http_ip_address] = Timestamp
                         self.http_url_attempts[http_url][http_ip_address] = 1
 
                         self.http_url_attempts[http_url][http_ip_address] = 1
-
+        #Error handling if the extract field is not present elasticsearch Index                  
         except AttributeError:
             print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
             print('The field you entered doesnot exist. ')

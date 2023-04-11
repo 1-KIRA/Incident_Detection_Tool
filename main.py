@@ -5,12 +5,14 @@ from elasticsearch import exceptions
 from multiprocessing import Process
 import sys
 
+#At first Checks if elasticsearch is connected or not.
 if exceptions.ConnectionError:
     print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
     print('Elascticsearch not connected. Elasticsearch seems down. \n')
     print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
     sys.exit()
 
+#If Elasticsearch is connected then it goes down to this block of code.
 else:
 
     # Define functions to run the engine processes
@@ -48,4 +50,3 @@ else:
         http_process.join()
         ssh_process.join()
         dos_process.join()
-
