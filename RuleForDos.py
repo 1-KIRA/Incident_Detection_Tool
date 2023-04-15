@@ -49,6 +49,8 @@ class DOS:
             print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
             print('The field you entered doesnot exist ')
             print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        except exceptions.ConnectionError:
+            print()
         except KeyboardInterrupt:
             sys.exit()
 

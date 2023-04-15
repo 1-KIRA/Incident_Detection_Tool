@@ -1,7 +1,7 @@
 import yaml
 from collections import defaultdict
 import datetime
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch, exceptions
 from elasticsearch_dsl import Search, Q
 from smtp import GmailSender
 import sys
@@ -63,6 +63,8 @@ class SshBruteforce:
             print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
             print('The field you entered doesnot exist. ')
             print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+        except exceptions.ConnectionError:
+            print()
         except KeyboardInterrupt:
             sys.exit()
 # try:

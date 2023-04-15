@@ -73,8 +73,13 @@ class HttpBruteforce:
             print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
             print('The field you entered doesnot exist. ')
             print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+        except exceptions.ConnectionError:
+            print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+            print("Could not connect to Elasticsearch. Check your connection!!")
+            print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         except KeyboardInterrupt:
             sys.exit()
+
 # try:  
 #     while True:                  
 #         # Create an instance of RuleEngine
