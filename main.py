@@ -1,52 +1,47 @@
 from RuleForApacheBruteforce import HttpBruteforce
 from RuleForSshBruteforce import SshBruteforce
 from RuleForDos import DOS
-from elasticsearch import exceptions
-from multiprocessing import Process
+import threading
 import sys
+from elasticsearch import exceptions
 
-#At first Checks if elasticsearch is connected or not.
-if exceptions.ConnectionError:
-    print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-    print('Elascticsearch not connected. Elasticsearch seems down. \n')
-    print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-    sys.exit()
+while True:
+    try:
+        # Create an instance of HttpBruteforce
+        http_engine = HttpBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
 
-#If Elasticsearch is connected then it goes down to this block of code.
-else:
+        # Create a thread for HttpBruteforce and start it
+        http_thread = threading.Thread(target=http_engine.process_apache_logs, args=('access_log',))
+        print("HTTP")
+        http_thread.start()
+    except exceptions.ConnectionError:
+        print("Not connected to ES")
+        # Create an instance of SshBruteforce
+    try:
+        ssh_engine = SshBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
 
-    # Define functions to run the engine processes
-    def run_http_engine():
-        HttpEngine = HttpBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
-        while True:
-            HttpEngine.process_apache_logs('access_log')
-            print('HTTP engine running...')
+        # Create a thread for SshBruteforce and start it
+        ssh_thread = threading.Thread(target=ssh_engine.process_auth_logs, args=('test',))
+        print("SSH")
+        ssh_thread.start()
+    except exceptions.ConnectionError:
+        print("Not connected to ES")
+        # Create an instance of RuleEngine
+    try:
+        engine = DOS('rules.yaml', ['http://3.229.13.155:9200'])
+        # Create a thread for DOS and start it
+        dos_thread = threading.Thread(target=engine.process_kern_logs, args=('doslog',))
+        print("DOS")
+        dos_thread.start()
 
-    def run_ssh_engine():
-        SshEngine = SshBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
-        while True:
-            SshEngine.process_auth_logs('test')
-            print('SSH engine running...')
+    except exceptions.ConnectionError:
+        print("Not connected to ES")
 
-    def run_dos_engine():
-        DosEngine = DOS('rules.yaml', ['http://3.229.13.155:9200'])
-        while True:
-            DosEngine.process_kern_logs('doslog')
-            print('DOS engine running...')
+    try:
+        # Wait for all threads to complete
+        http_thread.join()
+        ssh_thread.join()
+        dos_thread.join()
+    except exceptions.ConnectionError:
+        sys.exit()
 
-
-    if __name__ == '__main__':
-        # Create separate processes for each engine
-        http_process = Process(target=run_http_engine)
-        ssh_process = Process(target=run_ssh_engine)
-        dos_process = Process(target=run_dos_engine)
-        
-        # Start the processes
-        http_process.start()
-        ssh_process.start()
-        dos_process.start()
-
-        # Wait for the processes to finish
-        http_process.join()
-        ssh_process.join()
-        dos_process.join()

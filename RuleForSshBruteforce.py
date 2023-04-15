@@ -4,6 +4,7 @@ import datetime
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search, Q
 from smtp import GmailSender
+import sys
 
 
 class SshBruteforce:
@@ -62,6 +63,8 @@ class SshBruteforce:
             print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
             print('The field you entered doesnot exist. ')
             print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+        except KeyboardInterrupt:
+            sys.exit()
 # try:
 #     while True:
 #         engine = SshBruteforce('rules.yaml', ['http://3.229.13.155:9200'])

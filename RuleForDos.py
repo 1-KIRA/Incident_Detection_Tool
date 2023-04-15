@@ -1,8 +1,9 @@
 import yaml
 import datetime
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch, exceptions
 from elasticsearch_dsl import Search, Q
 from smtp import GmailSender
+import sys
 
 
 class DOS:
@@ -48,6 +49,8 @@ class DOS:
             print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
             print('The field you entered doesnot exist ')
             print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        except KeyboardInterrupt:
+            sys.exit()
 
 # try:
 #     while True:               
@@ -63,5 +66,3 @@ class DOS:
 #      print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
 #      sys.exit()
      
-# except KeyboardInterrupt:
-#     sys.exit()

@@ -73,10 +73,11 @@ class HttpBruteforce:
             print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
             print('The field you entered doesnot exist. ')
             print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-
+        except KeyboardInterrupt:
+            sys.exit()
 # try:  
 #     while True:                  
-#         # Create an instance of RuleEnginea
+#         # Create an instance of RuleEngine
 #         engine = HttpBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
 
 #         # Call the process_logs method to run the rule engine
