@@ -2,12 +2,14 @@ from RuleForApacheBruteforce import HttpBruteforce
 from RuleForSshBruteforce import SshBruteforce
 from RuleForDos import DOS
 import threading
-from elasticsearch import exceptions
 import sys
 
 
 while True:
     try:
+        print("#######################################################")
+        print("Connected to Elasticsearch")
+        print("#######################################################")
         # Create an instance of HttpBruteforce
         http_engine = HttpBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
 

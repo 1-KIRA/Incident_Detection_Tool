@@ -2,7 +2,7 @@ source: elasticsearch
 event_type: Log analysis
 conditions:
 #rule for SSH Bruteforce
-  - count: 500
+  - count: 20
     timeframe: 10
     by: ip_address
 #rule for Apache login bruteforce  

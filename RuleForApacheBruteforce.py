@@ -40,57 +40,39 @@ class HttpBruteforce:
                 self.http_url_attempts[http_url][http_ip_address] += 1
                 
                 # Check if the same IP address has made attempts within the last 10 seconds
-                if str(check_current_time)==str(check_timestamp_of_log):
-                    if http_ip_address in self.ip_last_attempt_time:
-                        last_attempt_time = self.ip_last_attempt_time[http_ip_address]
-                        time_diff = Timestamp - last_attempt_time
-                        
-                        if time_diff.total_seconds() < self.rule['conditions'][1]['http_timeframe']:
-                            self.ip_attempts[http_ip_address] += 1
-                            if self.http_url_attempts[http_url][http_ip_address] >= self.rule['conditions'][1]['http_count']:
-                                alert=(f"ALERT: IP address {http_ip_address} has made {self.rule['conditions'][1]['http_count']} attempts on {http_url} within {self.rule['conditions'][1]['http_timeframe']} seconds!")
-                                
-                                #Sending alert if incident is occurred.
-                                sender = GmailSender('env.txt')
-                                sender.send_email('Incident Detected', alert)
-                                now = datetime.datetime.now()
-                                formatted_date = now.strftime("%Y-%m-%d %H:%M:%S")
-                                send_log_index='myindex'
-                                detected_incident={'Timestamp':formatted_date,'IPV4':http_ip_address,'Message':alert,'URL':http_url}
-                                self.es.index(index=send_log_index, document=detected_incident)
-                        #changing value of ip address attempt to 1 and changing IP alst attemt to previous timestamp.
-                        else:
-                            self.ip_last_attempt_time[http_ip_address] = Timestamp
-                            self.http_url_attempts[http_url][http_ip_address] = 1
+                # if str(check_current_time)==str(check_timestamp_of_log):
+                if http_ip_address in self.ip_last_attempt_time:
+                    last_attempt_time = self.ip_last_attempt_time[http_ip_address]
+                    time_diff = Timestamp - last_attempt_time
+                    
+                    if time_diff.total_seconds() < self.rule['conditions'][1]['http_timeframe']:
+                        self.ip_attempts[http_ip_address] += 1
+                        if self.http_url_attempts[http_url][http_ip_address] >= self.rule['conditions'][1]['http_count']:
+                            alert=(f"ALERT: IP address {http_ip_address} has made {self.rule['conditions'][1]['http_count']} attempts on {http_url} within {self.rule['conditions'][1]['http_timeframe']} seconds!")
+                            
+                            #Sending alert if incident is occurred.
+                            sender = GmailSender('env.txt')
+                            sender.send_email('Incident Detected', alert)
+                            now = datetime.datetime.now()
+                            formatted_date = now.strftime("%Y-%m-%d %H:%M:%S")
+                            send_log_index='myindex'
+                            detected_incident={'Timestamp':formatted_date,'IPV4':http_ip_address,'Message':alert,'URL':http_url}
+                            self.es.index(index=send_log_index, document=detected_incident)
+                            break
                     #changing value of ip address attempt to 1 and changing IP alst attemt to previous timestamp.
                     else:
                         self.ip_last_attempt_time[http_ip_address] = Timestamp
                         self.http_url_attempts[http_url][http_ip_address] = 1
+                #changing value of ip address attempt to 1 and changing IP alst attemt to previous timestamp.
+                else:
+                    self.ip_last_attempt_time[http_ip_address] = Timestamp
+                    self.http_url_attempts[http_url][http_ip_address] = 1
 
-                        self.http_url_attempts[http_url][http_ip_address] = 1
+                    self.http_url_attempts[http_url][http_ip_address] = 1
         #Error handling if the extract field is not present elasticsearch Index                  
         except AttributeError:
             print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
             print('The field you entered doesnot exist. ')
             print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-        except exceptions.ConnectionError:
-            print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-            print("Could not connect to Elasticsearch. Check your connection!!")
-            print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         except KeyboardInterrupt:
             sys.exit()
-
-# try:  
-#     while True:                  
-#         # Create an instance of RuleEngine
-#         engine = HttpBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
-
-#         # Call the process_logs method to run the rule engine
-#         engine.process_apache_logs('access_log')
-# except exceptions.ConnectionError:
-#      print("\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-#      print('Elascticsearch not connected. Elasticsearch seems down. \n')
-#      print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-#      sys.exit()
-# except KeyboardInterrupt:
-#       sys.exit()
