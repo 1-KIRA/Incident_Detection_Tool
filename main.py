@@ -11,21 +11,21 @@ while True:
         print("Connected to Elasticsearch")
         print("#######################################################")
         # Create an instance of HttpBruteforce
-        http_engine = HttpBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
+        http_engine = HttpBruteforce('rules.yaml', ['https://3.229.13.155:9200'])
 
         # Create a thread for HttpBruteforce and start it
         http_thread = threading.Thread(target=http_engine.process_apache_logs, args=('access_log',))
         http_thread.start()
 
         # Create an instance of SshBruteforce
-        ssh_engine = SshBruteforce('rules.yaml', ['http://3.229.13.155:9200'])
+        ssh_engine = SshBruteforce('rules.yaml', ['https://3.229.13.155:9200'])
 
         # Create a thread for SshBruteforce and start it
         ssh_thread = threading.Thread(target=ssh_engine.process_auth_logs, args=('test',))
         ssh_thread.start()
 
         # Create an instance of RuleEngine
-        engine = DOS('rules.yaml', ['http://3.229.13.155:9200'])
+        engine = DOS('rules.yaml', ['https://3.229.13.155:9200'])
 
         # Create a thread for DOS and start it
         dos_thread = threading.Thread(target=engine.process_kern_logs, args=('doslog',))
