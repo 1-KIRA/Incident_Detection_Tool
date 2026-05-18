@@ -1,0 +1,11 @@
+{
+  "manifest": {
+    "cve_id": "CVE-2023-37920",
+    "target_repository": "git@github.com:1-KIRA/Incident_Detection_Tool.git",
+    "patch_sha256": "df5b648af4cd8defa5527c820999ec15e0f5f74a40bf9874fba56b467e926d54",
+    "sandbox_verification": "SUCCESS",
+    "verification_summary": "Sandbox verification successful. Clean compilation achieved.",
+    "engine_version": "v1.0.0-beta"
+  },
+  "cryptographic_signature": "b1b44e825a78fa040e8cbfed6c6379cfb6a227da5e4cb8cd8d50ef1d14868673"
+}
