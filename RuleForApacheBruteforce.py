@@ -5,9 +5,16 @@ from elasticsearch import Elasticsearch, exceptions
 from elasticsearch_dsl import Search, Q
 from smtp import GmailSender
 import sys
+import os
 
 class HttpBruteforce:
     def __init__(self, rules_file_path, elasticsearch_hosts):
+        # Security fix: validate that the rules file path is safe to prevent path traversal
+        safe_base = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'rules')
+        requested_path = os.path.abspath(rules_file_path)
+        if not requested_path.startswith(safe_base):
+            raise ValueError(f"Invalid rules file path: {rules_file_path}")
+        
         # Load YAML rule from file
         with open(rules_file_path, 'r') as f:
             self.rule = yaml.safe_load(f)
