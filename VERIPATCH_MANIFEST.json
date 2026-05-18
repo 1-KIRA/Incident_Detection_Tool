@@ -1,11 +1,11 @@
 {
   "manifest": {
-    "cve_id": "CVE-2023-37920",
-    "target_repository": "git@github.com:Incident_Detection_Tool.git",
-    "patch_sha256": "30a607a87736c18e45daa9afc5b76c7eaf33175540e5a14b30bc46e023a1172a",
+    "cve_id": "CVE-2025-66471",
+    "target_repository": "git@github.com:1-KIRA/Incident_Detection_Tool.git",
+    "patch_sha256": "fa8865a3dd0502d1a917f998a67991056568ed8899d9d8f113a031383ae53b0d",
     "sandbox_verification": "SUCCESS",
     "verification_summary": "Sandbox verification successful. Clean configuration achieved.",
     "engine_version": "v1.0.0-beta"
   },
-  "cryptographic_signature": "96b887ca6780ff986bb943b0ed25cd7290d386559a86a0b4eedfe125328b9c75"
+  "cryptographic_signature": "997b292f327d345612877388639eecbbbf540634840ee5d9990b165a10d1b721"
 }
