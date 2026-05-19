@@ -4,16 +4,50 @@ from elasticsearch import Elasticsearch, exceptions
 from elasticsearch_dsl import Search, Q
 from smtp import GmailSender
 import sys
+import os
 
 
 class DOS:
-    def __init__(self, rules_file_path, elasticsearch_hosts):
-    # Load YAML rule from file
+    def __init__(self, rules_file_path, elasticsearch_hosts, http_auth=None, use_ssl=True, verify_certs=True, ca_certs=None):
+        # Load YAML rule from file
         with open(rules_file_path, 'r') as f:
             self.rule = yaml.safe_load(f)
-       # Connect to Elasticsearch
-        self.es = Elasticsearch(elasticsearch_hosts)
-        
+
+        # Enforce HTTPS for all hosts
+        secure_hosts = []
+        for host in elasticsearch_hosts:
+            if host.startswith('http://'):
+                # Convert to https and warn (or simply replace)
+                secure_host = host.replace('http://', 'https://', 1)
+                print(f"Warning: Host {host} uses insecure HTTP; converting to {secure_host}")
+                secure_hosts.append(secure_host)
+            elif not host.startswith('https://'):
+                # Assume missing scheme; prepend https
+                secure_host = 'https://' + host
+                print(f"Warning: Host {host} missing scheme; assuming {secure_host}")
+                secure_hosts.append(secure_host)
+            else:
+                secure_hosts.append(host)
+
+        # If http_auth not provided, try to read from environment variables
+        if http_auth is None:
+            user = os.environ.get('ES_USER')
+            password = os.environ.get('ES_PASS')
+            if user and password:
+                http_auth = (user, password)
+            else:
+                # For security, require authentication; raise error if missing
+                raise ValueError("Elasticsearch authentication credentials are required. Set ES_USER and ES_PASS environment variables or pass http_auth.")
+
+        # Connect to Elasticsearch with TLS/SSL and authentication
+        self.es = Elasticsearch(
+            secure_hosts,
+            http_auth=http_auth,
+            use_ssl=use_ssl,
+            verify_certs=verify_certs,
+            ca_certs=ca_certs
+        )
+
     def process_kern_logs(self, index_name):
         today = datetime.datetime.now().date()
         query = Q('exists', field='Data')
@@ -56,8 +90,9 @@ class DOS:
 
 # try:
 #     while True:               
-#         # Create an instance of RuleEngine
-#         engine = DOS('rules.yaml', ['http://3.229.13.155:9200'])
+#         # Create an instance of RuleEngine with secure Elasticsearch connection
+#         # (use HTTPS and authentication – set ES_USER/ES_PASS environment variables)
+#         engine = DOS('rules.yaml', ['https://3.229.13.155:9200'])
 
 #         # Call the process_logs method to run the rule engine
 #         engine.process_kern_logs('doslog')
@@ -67,4 +102,3 @@ class DOS:
 #      print('Elascticsearch not connected. Elasticsearch seems down \n')
 #      print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
 #      sys.exit()
-     
