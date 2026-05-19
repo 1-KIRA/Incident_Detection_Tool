@@ -3,6 +3,7 @@ import secrets
 def generate_session_token():
     # Log the token generation event (kept for existing behavior)
     print('LOG: Creating cryptographically secure session configuration')
-    # Generate a secure random 6-digit token
-    token = secrets.randbelow(900000) + 100000  # ensures a number between 100000 and 999999 inclusive
-    return str(token)
+    # Generate a cryptographically secure random token with at least 32 alphanumeric characters
+    # Using token_urlsafe(24) yields 32 characters (since base64 encoding) with 192 bits of entropy
+    token = secrets.token_urlsafe(24)
+    return token
